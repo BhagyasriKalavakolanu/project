@@ -1,0 +1,76 @@
+package com.java.shop;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class Authentication {
+
+	public static void main(String[] args) {
+
+		// Query: Where do you think you get this from?
+		// Answer: This is just a standalone java application, so that we can
+		// get either from the database by connecting to it or we can create a
+		// collection of values and use it.
+
+		// Configured usernames and passwords in a map.
+		// Key is username and value is password..
+		Map users = new HashMap();
+		users.put("shopowner", "shopowner");
+		users.put("shopper", "shopper");
+
+		// Query: Why more than one store...
+		// Answer: Just to figure out the owner relates the store ids present.
+		// If not then he is not owner of the store
+		Map stores = new HashMap();
+		stores.put("storeId15", "true");
+		stores.put("storeId566", "true");
+		stores.put("storeId123", "false");
+
+		// Asking user to enter username and password
+		Scanner input = new Scanner(System.in);
+
+		String username;
+		String password;
+
+		System.out.println("Log in:");
+		System.out.println("Enter username: ");
+		username = input.nextLine();
+
+		System.out.println("Enter password: ");
+		password = input.nextLine();
+
+		User check = new User(username, password);
+
+		// Authenticating the user with values based on map.
+		if (check.authenticate(users)) {
+			if (username.equalsIgnoreCase(check.accounts[0][0])) {
+				System.out.println(check.accounts[0][0] + " Logged In");
+				System.out.println("Checking store ids........");
+			} else if (username.equalsIgnoreCase(check.accounts[0][1])) {
+				System.out.println("Sorry " + check.accounts[0][1]
+						+ " is not a shop owner and LogIn failed");
+				System.exit(0);
+			}
+
+		} else {
+			System.out.println("Username : " + username + " and Password : "
+					+ password + " Invalid or does not exist");
+			System.out.println("Please enter correct username and password...");
+			System.exit(0);
+		}
+
+		String storeid;
+		System.out.println("Enter store id: ");
+		storeid = input.nextLine();
+
+		if (check.checkStores(stores, storeid)) {
+			System.out.println(storeid
+					+ " is present and you will be redirecting to next page");
+		} else {
+			System.out.println(storeid
+					+ " is not present and you will be logging off");
+		}
+	}
+
+}
